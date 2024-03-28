@@ -1,16 +1,28 @@
+if (typeof modalPath  === 'undefined' ) {
+    var modalPath = chrome.runtime.getURL('modal.html') || '';
+}
 
-
-const modalPath = chrome.runtime.getURL('modal.html');
 fetch(modalPath).then(response => response.text()).then(data => {
     document.body.insertAdjacentHTML('beforeend', data);
     document.getElementById('ext-btn-modal').addEventListener('click', function() {
         const url = document.getElementById('ext-input-modal').value;
         if (url) {
-            const regex = /_(?!.*_)(.*)/;
-            const sys_url_path = url.replace(regex, '.do?sys_id=$1');
-            window.open(`${document.location.origin}/${sys_url_path}`,'_blank');
+            open_sys_id_new_tab(url)
         }
         document.getElementById('myModal').remove()
       });
-}).catch(err => console.error(err));
+    document.addEventListener('keydown', function(event) {
+        // Check if the Escape key was pressed
+        if ((event.key === "Escape" || event.keyCode === 27) && document.getElementById('myModal')){
+            // Find the modal element by its ID
+            var modalElement = document.getElementById('myModal');
+            
+            // If the element exists, remove it from the DOM
+            if (modalElement) {
+                modalElement.remove();
+            }
+        }
+    });
+    
+    }).catch(err => console.error(err));
 
